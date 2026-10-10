@@ -1,0 +1,13 @@
+{
+  "name": "mv-api",
+  "version": "1.0.0",
+  "description": "Movie and TV metadata API (search, details, seasons, episodes) backed by TMDB",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": { "express": "^4.19.2" }
+}
