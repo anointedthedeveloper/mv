@@ -1,0 +1,23 @@
+{
+  "genres": {
+    "movie": [{ "id": 1, "name": "Drama" }, { "id": 2, "name": "Sci-Fi" }],
+    "tv": [{ "id": 1, "name": "Drama" }, { "id": 3, "name": "Mystery" }]
+  },
+  "movies": [
+    { "id": "m1", "title": "Synthetic Horizon", "overview": "Sample record.", "releaseDate": "2020-05-01",
+      "rating": 7.4, "poster": null, "backdrop": null, "genreIds": [2], "tagline": "Sample", "status": "Released",
+      "runtimeMinutes": 112, "cast": [{ "name": "Sample Actor", "character": "Lead", "photo": null }] },
+    { "id": "m2", "title": "Placeholder Story", "overview": "Another sample.", "releaseDate": "2022-09-15",
+      "rating": 6.1, "poster": null, "backdrop": null, "genreIds": [1], "tagline": null, "status": "Released",
+      "runtimeMinutes": 98, "cast": [] }
+  ],
+  "tv": [
+    { "id": "t1", "title": "Sample Series", "overview": "Sample series.", "releaseDate": "2021-01-10",
+      "rating": 8.0, "poster": null, "backdrop": null, "genreIds": [1, 3], "tagline": null, "status": "Ended", "cast": [],
+      "seasons": [{ "season": 1, "name": "Season 1", "airDate": "2021-01-10", "poster": null, "episodes": [
+        { "episode": 1, "name": "Pilot, \"first\"", "overview": "First.", "airDate": "2021-01-10", "runtimeMinutes": 45, "rating": 7.9, "still": null },
+        { "episode": 2, "name": "Second", "overview": "Next.", "airDate": "2021-01-17", "runtimeMinutes": 44, "rating": 8.1, "still": null }
+      ] }] }
+  ],
+  "trending": ["t1", "m1", "m2"]
+}
