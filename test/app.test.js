@@ -18,3 +18,8 @@ test('bad id rejected', async () => {
 });
 
 test.after(() => server.close());
+
+test('export validates seasons', async () => {
+  assert.equal((await fetch(`${base()}/title/tv/1/export`)).status, 400);
+  assert.equal((await fetch(`${base()}/title/tv/1/export?seasons=a`)).status, 400);
+});

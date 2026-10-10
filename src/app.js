@@ -1,5 +1,6 @@
 import express from 'express';
 import * as tmdb from './tmdb.js';
+import { exportSeasons } from './export.js';
 
 const wrap = (fn) => (req, res, next) => fn(req, res).then((d) => res.json(d)).catch(next);
 const positiveInt = (v) => /^\d{1,9}$/.test(v) && Number(v) >= 0;
@@ -40,6 +41,20 @@ export function createApp() {
     }
     return tmdb.season(req.params.id, req.params.n);
   }));
+
+  // Zip of episode metadata. ?seasons=1,2,3 (max 50)
+  app.get('/title/tv/:id/export', async (req, res, next) => {
+    try {
+      if (!positiveInt(req.params.id)) throw new tmdb.HttpError(400, 'Invalid id');
+      const list = String(req.query.seasons || '').split(',').filter(Boolean);
+      if (!list.length || list.length > 50 || !list.every(positiveInt)) {
+        throw new tmdb.HttpError(400, 'Query param "seasons" must be a comma list of numbers, e.g. 1,2');
+      }
+      await exportSeasons(res, req.params.id, [...new Set(list.map(Number))]);
+    } catch (e) {
+      next(e);
+    }
+  });
 
   app.use((req, res) => res.status(404).json({ error: 'Not found' }));
   app.use((err, req, res, next) => {

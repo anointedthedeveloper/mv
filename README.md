@@ -17,6 +17,7 @@ export $(grep -v '^#' .env | xargs) && npm start
 | `GET /title/movie/:id` | Movie details, cast |
 | `GET /title/tv/:id` | Series details, cast, seasons |
 | `GET /title/tv/:id/seasons/:n` | Episode list for a season |
+| `GET /title/tv/:id/export?seasons=1,2` | Zip of episode metadata (JSON + CSV per season) |
 | `GET /health` | Health check |
 
 Responses are cached in memory (`CACHE_TTL_SECONDS`) and rate-limited per IP (`RATE_LIMIT_PER_MINUTE`).
