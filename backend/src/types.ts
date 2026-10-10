@@ -53,6 +53,8 @@ export interface Page<T> { page: number; totalPages: number; totalResults: numbe
 
 export interface SearchParams { query: string; type: MediaType | 'all'; page: number }
 
+export interface StreamSource { label: string; url: string; definition: string; sizeBytes: number; durationSeconds: number }
+
 export interface MetadataProvider {
   readonly name: string;
   search(p: SearchParams): Promise<Page<TitleSummary>>;
@@ -61,4 +63,5 @@ export interface MetadataProvider {
   getSeason(tvId: string, season: number): Promise<SeasonDetails>;
   trending(type: MediaType | 'all', page: number): Promise<Page<TitleSummary>>;
   genres(type: MediaType): Promise<Genre[]>;
+  getStreams?(id: string, type: MediaType, season?: number, episode?: number): Promise<StreamSource[]>;
 }

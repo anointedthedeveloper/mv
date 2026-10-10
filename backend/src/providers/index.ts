@@ -1,7 +1,8 @@
-import type { Config } from '../config.js';
 import type { MetadataProvider } from '../types.js';
 import { FixturesProvider } from './fixtures.js';
-import { TmdbProvider } from './tmdb.js';
+import { MovieBoxProvider } from './moviebox.js';
 
-export const createProvider = (cfg: Config): MetadataProvider =>
-  cfg.PROVIDER === 'fixtures' ? new FixturesProvider() : new TmdbProvider(cfg.TMDB_API_KEY, cfg.UPSTREAM_TIMEOUT_MS);
+export const createProvider = (): MetadataProvider => {
+  if (process.env.PROVIDER === 'moviebox') return new MovieBoxProvider();
+  return new FixturesProvider();
+};

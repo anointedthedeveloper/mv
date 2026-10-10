@@ -13,6 +13,7 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [downloads, setDownloads] = useState<{ id: string; res: ApiResult } | null>(null);
   const [seasons, setSeasons] = useState('1');
+  const [selected, setSelected] = useState<Title | null>(null);
   const abort = useRef<AbortController | null>(null);
 
   useEffect(() => { localStorage.setItem('apiBase', base); }, [base]);
@@ -31,7 +32,7 @@ export function App() {
   const details = (t: Title) => run(`/api/${t.type === 'movie' ? 'movies' : 'tv'}/${encodeURIComponent(t.id)}`);
   const key = (t: Title) => `${t.type}-${t.id}`;
   async function loadDownloads(t: Title) {
-    setDownloads({ id: key(t), res: await call(base, `/api/downloads/${encodeURIComponent(key(t))}`) });
+    setDownloads({ id: key(t), res: await call(base, `/api/streams/${t.type}/${encodeURIComponent(t.id)}`) });
   }
 
   const data = result?.data as { results?: Title[]; page?: number; totalPages?: number } | undefined;
@@ -73,7 +74,7 @@ export function App() {
                   <strong>{t.title}</strong>
                   <span className="muted">{t.type.toUpperCase()} · {t.releaseDate?.slice(0, 4) ?? '—'} · ★ {t.rating ?? '—'} · id {t.id}</span>
                 </div>
-                <button onClick={() => details(t)}>Details</button>
+                <button onClick={() => { setSelected(t); details(t); }}>Details</button>
                 <button onClick={() => loadDownloads(t)}>Downloads</button>
                 {t.type === 'tv' && <button onClick={() => run(`/api/tv/${t.id}/seasons/1`)}>Season 1</button>}
               </li>
@@ -89,18 +90,29 @@ export function App() {
         </>
       )}
 
+      {selected && (
+        <section style={{ border: '1px solid #555', padding: '1rem', borderRadius: 8, marginTop: '1rem' }}>
+          <button onClick={() => setSelected(null)} style={{ float: 'right' }}>✕</button>
+          {selected.poster && <img src={selected.poster} alt="" width={80} style={{ float: 'left', marginRight: '1rem' }} />}
+          <h2 style={{ margin: 0 }}>{selected.title}</h2>
+          <p className="muted">{selected.type.toUpperCase()} · {selected.releaseDate?.slice(0, 4) ?? '—'} · ★ {selected.rating ?? '—'}</p>
+          <p>{selected.overview ?? 'No overview available.'}</p>
+          <div style={{ clear: 'both' }} />
+        </section>
+      )}
+
       {downloads && (
         <section>
-          <h2>Authorized downloads — {downloads.id}</h2>
+          <h2>Streams — {downloads.id}</h2>
           {!downloads.res.ok ? (
             <div className="error" role="alert">{downloads.res.error}</div>
           ) : (
             <ul className="results">
-              {(downloads.res.data as { files: DownloadFile[] }).files.map((f) => (
-                <li key={f.file}>
-                  <div className="meta"><strong>{f.label}</strong>
-                    <span className="muted">{fmtSize(f.sizeBytes)}{f.license ? ` · ${f.license}` : ''}</span></div>
-                  <a className="btn" href={f.url} download>Download</a>
+              {((downloads.res.data as { streams: { label: string; url: string; sizeBytes: number }[] }).streams ?? []).map((s) => (
+                <li key={s.url}>
+                  <div className="meta"><strong>{s.label}</strong>
+                    <span className="muted">{s.sizeBytes > 0 ? fmtSize(s.sizeBytes) : ''}</span></div>
+                  <a className="btn" href={s.url} target="_blank" rel="noreferrer">Play / Download</a>
                 </li>
               ))}
             </ul>

@@ -86,6 +86,13 @@ export function createApp(cfg: Config, provider: MetadataProvider, log: Logger =
     } catch (e) { next(e); }
   });
 
+  app.get('/api/streams/:type/:id', route(async (req) => {
+    const p = parse(z.object({ id, type: kind }), req.params);
+    const q = parse(z.object({ season: z.coerce.number().int().min(1).default(1), episode: z.coerce.number().int().min(1).default(1) }), req.query);
+    if (!provider.getStreams) throw new HttpError(501, 'Streams not supported by this provider', 'not_supported');
+    return { streams: await provider.getStreams(p.id, p.type, q.season, q.episode) };
+  }));
+
   app.get('/api/downloads/:id', route(async (req) => downloads.list(parse(z.object({ id }), req.params).id)));
 
   app.get('/api/downloads/:id/files/:file', (req, res, next) => {
