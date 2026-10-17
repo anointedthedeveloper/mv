@@ -62,7 +62,7 @@ function buildHeaders(method: string, fullUrl: string, body = ''): Record<string
 function httpsGet(url: string, headers: Record<string, string>): Promise<string> {
   const u = new URL(url);
   return new Promise((resolve, reject) => {
-    const req = https.request({ method: 'GET', hostname: u.hostname, path: u.pathname + u.search, headers, agent: false }, (res) => {
+    const req = https.request({ method: 'GET', hostname: u.hostname, path: u.pathname + (u.search ?? ''), headers, agent: false }, (res) => {
       let d = ''; res.on('data', (c: Buffer) => { d += c; }); res.on('end', () => resolve(d));
     });
     req.on('error', reject); req.end();
@@ -92,7 +92,7 @@ function httpsRequest(method: string, path: string, body?: string): Promise<stri
   return new Promise((resolve, reject) => {
     const req = https.request({
       method, hostname: url.hostname,
-      path: url.pathname + url.search,
+      path: url.pathname + (url.search ?? ''),
       headers, agent: false,
     }, (res) => {
       const xu = res.headers['x-user'];

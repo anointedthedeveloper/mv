@@ -2,3 +2,9 @@ node_modules
 dist
 .env
 backend/media
+/jadx/
+/jadx147/
+/moviebox_output/
+/jadx.zip
+/jadx147.zip
+*.apk
